@@ -1,15 +1,34 @@
 ﻿namespace SDP_assignment
 {
-    public class UserFactory : IUserFactory
+    public abstract class UserFactory
     {
-        public User CreateUser(string userType)
+        public User RegisterUser()
         {
-            return userType.ToLower() switch
+            User user = CreateUser();
+
+            Console.Write("Enter your name: ");
+            user.Name = Console.ReadLine();
+
+            string email;
+            do
             {
-                "customer" => new Customer(),
-                "restaurant" => new Restaurant(),
-                _ => throw new ArgumentException("Invalid user type. Must be 'customer' or 'restaurant'.")
-            };
+                Console.Write("Enter email: ");
+                email = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(email));
+            user.Email = email;
+
+            string password;
+            do
+            {
+                Console.Write("Enter password (min 6 characters): ");
+                password = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(password) || password.Length < 6);
+            user.Password = password;
+
+            return user;
         }
+
+        protected abstract User CreateUser();
     }
+
 }

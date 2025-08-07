@@ -2,7 +2,7 @@
 {
     public class MenuItem
     {
-        public int Id { get; set; }
+        public int MenuItemId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
@@ -14,4 +14,5 @@
             return $"{Name} - {Description} (${Price:F2}) [{Category}]";
         }
     }
+
 }
