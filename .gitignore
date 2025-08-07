@@ -1,0 +1,41 @@
+# Ignore Visual Studio temporary files, build results, and cache
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore build results
+bin/
+obj/
+out/
+
+# Ignore Rider IDE files
+.idea/
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore Test Results
+TestResults/
+*.trx
+
+# Ignore NuGet packages
+*.nupkg
+packages/
+*.snupkg
+
+# Ignore log and temp files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Ignore configuration transform files
+*.config.*
+
+# Ignore Code Index files (your specific error)
+.vs/Code/FileContentIndex/
+
+# Ignore git merge conflict files
+*.orig
