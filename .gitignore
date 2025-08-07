@@ -1,3 +1,4 @@
+
 # Ignore Visual Studio temporary files, build results, and cache
 .vs/
 *.user
@@ -39,3 +40,8 @@ packages/
 
 # Ignore git merge conflict files
 *.orig
+# .gitignore
+SDP-assignment.sln
+SDP-assignment.csproj
+bin 
+obj
