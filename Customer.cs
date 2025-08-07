@@ -6,40 +6,25 @@ namespace SDP_assignment
 {
     public class Customer : User
     {
-        public void ViewRestaurants(List<User> users)
+        public void OrderFood()
         {
-            Console.WriteLine("\n=== AVAILABLE RESTAURANTS ===");
-            var restaurants = users.OfType<Restaurant>();
-
-            if (!restaurants.Any())
-            {
-                Console.WriteLine("No restaurants available.");
-                return;
-            }
-
-            foreach (var r in restaurants)
-            {
-                Console.WriteLine($"{r.Id}. {r.Name}");
-            }
+            Console.WriteLine("Ordering food...");
         }
 
-        public void ViewMenuItems(List<MenuItem> items)
+        public void CustomizeOrderItem()
         {
-            if (!items.Any())
-            {
-                Console.WriteLine("No menu items available.");
-                return;
-            }
+            Console.WriteLine("Customizing order item...");
+        }
 
-            var grouped = items.GroupBy(i => i.Category);
-            foreach (var group in grouped)
-            {
-                Console.WriteLine($"\n{group.Key.ToUpper()}");
-                foreach (var item in group)
-                {
-                    Console.WriteLine($"- {item.Name} (${item.Price})");
-                }
-            }
+        public void SearchFoodsAndRestaurants()
+        {
+            Console.WriteLine("Searching for foods and restaurants...");
+        }
+
+        public void SelectPaymentMethod()
+        {
+            Console.WriteLine("Selecting payment method...");
         }
     }
+
 }
