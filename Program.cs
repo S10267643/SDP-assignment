@@ -9,7 +9,6 @@ namespace SDP_assignment
     {
         static List<User> users = new List<User>();
         static List<MenuItem> menuItems = new List<MenuItem>();
-        static OfferManager offerManager = new OfferManager();
         static int userIdCounter = 1;
         static int menuItemIdCounter = 1;
 
@@ -129,8 +128,7 @@ namespace SDP_assignment
                 Console.WriteLine("1. View Restaurants");
                 Console.WriteLine("2. View All Menu Items");
                 Console.WriteLine("3. View Menu by Restaurant");
-                Console.WriteLine("4. View Special Offers");
-                Console.WriteLine("5. Logout");
+                Console.WriteLine("4. Logout");
                 Console.Write("Enter your choice: ");
 
                 switch (Console.ReadLine())
@@ -145,9 +143,6 @@ namespace SDP_assignment
                         ViewMenuByRestaurant(customer);
                         break;
                     case "4":
-                        ViewActiveSpecialOffers();
-                        break;
-                    case "5":
                         logout = true;
                         Console.WriteLine("Logging out...");
                         break;
@@ -179,7 +174,7 @@ namespace SDP_assignment
                         restaurant.CreateMenuItem(menuItems, ref menuItemIdCounter);
                         break;
                     case "3":
-                        restaurant.ManageSpecialOffers(offerManager);
+                      //  call wtv special order does here 
                         break;
                     case "4":
                         logout = true;
@@ -220,25 +215,6 @@ namespace SDP_assignment
             else
             {
                 Console.WriteLine("Invalid input. Please enter a number.");
-            }
-        }
-
-        static void ViewActiveSpecialOffers()
-        {
-            Console.WriteLine("\n=== ACTIVE SPECIAL OFFERS ===");
-            var activeOffers = offerManager.GetAllActiveOffers();
-
-            if (!activeOffers.Any())
-            {
-                Console.WriteLine("No active offers available.");
-                return;
-            }
-
-            foreach (var offer in activeOffers)
-            {
-                var restaurant = users.OfType<Restaurant>().FirstOrDefault(r => r.Id == offer.RestaurantId);
-                Console.WriteLine($"\n{restaurant?.Name ?? "Unknown Restaurant"}");
-                Console.WriteLine($"- {offer.GetOfferDescription()}");
             }
         }
     }
