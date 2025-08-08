@@ -115,17 +115,32 @@ namespace SDP_assignment
             while (!logout)
             {
                 Console.WriteLine($"\n=== RESTAURANT MENU - {restaurant.Name} ===");
-                Console.WriteLine("1. Create Menu Item");
-                Console.WriteLine("2. Logout");
+                Console.WriteLine("1. Add Category");
+                Console.WriteLine("2. Add Item to Category");
+                Console.WriteLine("3. View Full Menu");
+                Console.WriteLine("4. Logout");
                 Console.Write("Enter choice: ");
+
                 switch (Console.ReadLine())
                 {
                     case "1":
-                        restaurant.CreateMenuItem(menuItems, ref menuItemIdCounter);
+                        Console.Write("Enter category name: ");
+                        restaurant.AddMenuCategory(Console.ReadLine());
                         break;
+
                     case "2":
+                        Console.Write("Enter target category name: ");
+                        restaurant.AddMenuItemToCategory(Console.ReadLine());
+                        break;
+
+                    case "3":
+                        restaurant.PrintFullMenu();
+                        break;
+
+                    case "4":
                         logout = true;
                         break;
+
                     default:
                         Console.WriteLine("Invalid choice.");
                         break;
@@ -149,13 +164,13 @@ namespace SDP_assignment
                         // Simplified order placement - in real app you'd select restaurant and items
                         var sampleItems = new List<MenuItem>
                 {
-                    new MenuItem { Name = "Burger", Price = 9.99m },
-                    new MenuItem { Name = "Fries", Price = 3.99m }
+                  //  new MenuItem { Name = "Burger", Price = 9.99m },
+                   // new MenuItem { Name = "Fries", Price = 3.99m }
                 };
-                        customer.PlaceOrder(null, sampleItems); // Pass null restaurant for demo
+                     //   customer.PlaceOrder(null, sampleItems); // Pass null restaurant for demo
                         break;
                     case "2":
-                        customer.ViewOrderHistory();
+                     //   customer.ViewOrderHistory();
                         break;
                     case "3":
                         logout = true;
