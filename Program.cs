@@ -1,5 +1,5 @@
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,9 +35,14 @@ namespace SDP_assignment
                         if (user != null)
                         {
                             if (user is Customer customer)
+                            {
                                 Console.WriteLine($"Logged in as customer {customer.Name}");
+                                CustomerMenu(customer);
+                            }
                             else if (user is Restaurant restaurant)
+                            {
                                 ShowRestaurantMenu(restaurant);
+                            }
                         }
                         break;
                     case "3":
@@ -73,6 +78,16 @@ namespace SDP_assignment
             newUser.UserId = userIdCounter++;
             users.Add(newUser);
             Console.WriteLine($"Account created successfully! Your ID is: {newUser.UserId}");
+
+            if (newUser is Customer customer)
+            {
+                Console.WriteLine($"Logged in as customer {customer.Name}");
+                CustomerMenu(customer);
+            }
+            else if (newUser is Restaurant restaurant)
+            {
+                ShowRestaurantMenu(restaurant);
+            }
         }
 
         static User Login()
@@ -109,6 +124,40 @@ namespace SDP_assignment
                         restaurant.CreateMenuItem(menuItems, ref menuItemIdCounter);
                         break;
                     case "2":
+                        logout = true;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
+                }
+            }
+        }
+        static void CustomerMenu(Customer customer)
+        {
+            bool logout = false;
+            while (!logout)
+            {
+                Console.WriteLine("\n=== CUSTOMER MENU ===");
+                Console.WriteLine("1. Place Order");
+                Console.WriteLine("2. View Order History");
+                Console.WriteLine("3. Logout");
+                Console.Write("Enter choice: ");
+
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        // Simplified order placement - in real app you'd select restaurant and items
+                        var sampleItems = new List<MenuItem>
+                {
+                    new MenuItem { Name = "Burger", Price = 9.99m },
+                    new MenuItem { Name = "Fries", Price = 3.99m }
+                };
+                        customer.PlaceOrder(null, sampleItems); // Pass null restaurant for demo
+                        break;
+                    case "2":
+                        customer.ViewOrderHistory();
+                        break;
+                    case "3":
                         logout = true;
                         break;
                     default:
