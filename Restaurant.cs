@@ -1,39 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace SDP_assignment
+﻿namespace SDP_assignment
 {
     public class Restaurant : User
     {
-        public List<MenuItem> MyMenuItems { get; private set; }
+        private readonly MenuComponent _allMenus;
 
         public Restaurant()
         {
-            MyMenuItems = new List<MenuItem>();
+            _allMenus = new MenuCategory("MAIN MENU");
         }
 
-        public void CreateMenuItem(List<MenuItem> globalMenuItems, ref int menuItemIdCounter)
+        public void AddMenuCategory(string name)
         {
-            var builder = new MenuItemBuilder().SetRestaurantId(this.UserId);
-            var item = builder.BuildFromInput(menuItemIdCounter);
+            _allMenus.Add(new MenuCategory(name));
+            Console.WriteLine($"Category '{name}' created successfully!");
+        }
 
-            if (item != null)
+        public void AddMenuItemToCategory(string categoryName)
+        {
+            try
             {
-                menuItemIdCounter++;
-                globalMenuItems.Add(item);
-                MyMenuItems.Add(item);
-                Console.WriteLine($"Menu item '{item.Name}' created successfully!");
+                // Get the MAIN MENU category
+                var mainMenu = _allMenus as MenuCategory;
+
+                // Find the target category
+                MenuCategory targetCategory = null;
+                foreach (MenuComponent component in mainMenu.GetChildren())
+                {
+                    if (component is MenuCategory category && category.Name.Equals(categoryName))
+                    {
+                        targetCategory = category;
+                        break;
+                    }
+                }
+
+                if (targetCategory == null)
+                {
+                    Console.WriteLine($"Category '{categoryName}' not found!");
+                    return;
+                }
+
+                Console.Write("Item name: ");
+                string name = Console.ReadLine();
+
+                Console.Write("Description: ");
+                string desc = Console.ReadLine();
+
+                Console.Write("Price: $");
+                decimal price = decimal.Parse(Console.ReadLine());
+
+                targetCategory.Add(new MenuItem(name, desc, price, this.UserId));
+                Console.WriteLine($"Item '{name}' added to '{categoryName}'!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
 
-        // Stubs
-        public void UpdateMenuItem() => Console.WriteLine("Updating menu item...");
-        public void DeleteMenuItem() => Console.WriteLine("Deleting menu item...");
-        public void CreateSpecialOffer() => Console.WriteLine("Creating special offer...");
-        public void AcceptOrder() => Console.WriteLine("Accepting order...");
-        public void RejectOrder() => Console.WriteLine("Rejecting order...");
-        public void StoreDeliveredOrder() => Console.WriteLine("Storing delivered order...");
+        public void PrintFullMenu()
+        {
+            Console.WriteLine($"\n=== {Name}'s MENU ===");
+            _allMenus.Print();
+        }
     }
-
 }

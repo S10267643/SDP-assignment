@@ -1,18 +1,29 @@
 ﻿namespace SDP_assignment
 {
-    public class MenuItem
+    public class MenuItem : MenuComponent
     {
-        public int MenuItemId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public string Category { get; set; }
-        public int RestaurantId { get; set; }
+        private readonly string _name;
+        private readonly string _description;
+        private readonly decimal _price;
+        private readonly int _userId;
 
-        public override string ToString()
+        public MenuItem(string name, string description, decimal price, int userId)
         {
-            return $"{Name} - {Description} (${Price:F2}) [{Category}]";
+            _name = name;
+            _description = description;
+            _price = price;
+            _userId = userId;
+        }
+
+        public override string Name => _name;
+        public override string Description => _description;
+        public override decimal Price => _price;
+
+        public override void Print()
+        {
+            Console.Write($"  {_name}");
+            Console.WriteLine($": ${_price:N2}");
+            Console.WriteLine($"  -- {_description}");
         }
     }
-
 }
