@@ -13,7 +13,7 @@ namespace SDP_assignment
         public decimal TotalAmount => Items.Sum(item => item.Price);
         public OrderState State { get; set; } = new PendingPaymentState();
         private PaymentStrategy paymentStrategy;
-        private List<OrderObserver> _observers = new List<OrderObserver>();
+        private List<OrderObserver> observers = new List<OrderObserver>();
 
         public void SetPaymentStrategy(PaymentStrategy strategy)
         {
@@ -22,7 +22,7 @@ namespace SDP_assignment
 
         public void AttachObserver(OrderObserver observer)
         {
-            _observers.Add(observer);
+            observers.Add(observer);
         }
 
         public void ProcessPayment()
@@ -43,7 +43,7 @@ namespace SDP_assignment
 
         private void NotifyObservers()
         {
-            foreach (var observer in _observers)
+            foreach (var observer in observers)
             {
                 observer.Update(this);
             }
