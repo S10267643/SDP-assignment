@@ -1,6 +1,6 @@
 ﻿namespace SDP_assignment
 {
-    public class MenuItem : MenuComponent
+    public class MenuItem : MenuComponent, IFoodItem
     {
         private readonly string _name;
         private readonly string _description;
@@ -18,6 +18,10 @@
         public override string Name => _name;
         public override string Description => _description;
         public override decimal Price => _price;
+
+        // IFoodItem implementation
+        public decimal GetPrice() => _price;
+        public string GetDescription() => _name;
 
         public override void Print()
         {

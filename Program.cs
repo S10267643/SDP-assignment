@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -156,6 +156,7 @@ namespace SDP_assignment
                 Console.WriteLine("1. Place Order");
                 Console.WriteLine("2. View Order History");
                 Console.WriteLine("3. Logout");
+                Console.WriteLine("4. Try Pattern Demo (Strategy + Decorator)");
                 Console.Write("Enter choice: ");
 
                 switch (Console.ReadLine())
@@ -175,10 +176,144 @@ namespace SDP_assignment
                     case "3":
                         logout = true;
                         break;
+                    case "4": // ADD — interactive Strategy + Decorator
+                        PatternDemo();
+                        break;
                     default:
                         Console.WriteLine("Invalid choice.");
                         break;
                 }
+            }
+            static void PatternDemo()
+            {
+                if (menuItems == null || menuItems.Count == 0)
+                {
+                    Console.WriteLine("\nNo menu items available. Ask a restaurant to add some first.");
+                    return;
+                }
+
+                Console.WriteLine("\n=== STRATEGY — Choose search method ===");
+                Console.WriteLine("1. Linear");
+                Console.WriteLine("2. Indexed");
+                Console.WriteLine("3. Fuzzy");
+                Console.Write("Choice: ");
+                ISearchStrategy strategy = (Console.ReadLine() ?? "") switch
+                {
+                    "2" => new IndexedSearchStrategy(),
+                    "3" => new FuzzySearchStrategy(),
+                    _ => new LinearSearchStrategy()
+                };
+
+                var criteria = new SearchCriteria
+                {
+                    QueryText = Prompt("Query text (blank = all): "),
+                    Category = Prompt("Category filter (blank = any): "),
+                    MaxPrice = ParseNullableDecimal(Prompt("Max price (blank = any): "))
+                };
+
+                var service = new SearchService();
+                service.SetStrategy(strategy);
+
+                var results = service.Search(menuItems, criteria);
+                if (results.Count == 0)
+                {
+                    Console.WriteLine("No results. Try different criteria.");
+                    return;
+                }
+
+                Console.WriteLine("\n=== RESULTS ===");
+                for (int i = 0; i < results.Count; i++)
+                {
+                    var priceVal = results[i].Price;
+                    Console.WriteLine($"{i + 1}. {results[i].Name} - {priceVal:C}");
+                }
+
+                int idx = ReadIntInRange($"Select an item (1..{results.Count}): ", 1, results.Count) - 1;
+
+                // Wrap selected MenuItem as IFoodItem for decorators
+                IFoodItem order = results[idx];
+
+                bool done = false;
+                while (!done)
+                {
+                    Console.WriteLine("\n=== DECORATOR — Customise ===");
+                    Console.WriteLine("1. Add-on");
+                    Console.WriteLine("2. Swap side");
+                    Console.WriteLine("3. Size upgrade");
+                    Console.WriteLine("4. Finish");
+                    Console.Write("Choice: ");
+                    switch (Console.ReadLine())
+                    {
+                        case "1":
+                            var add = Prompt("Add-on name: ");
+                            var addDelta = ReadDecimal("Price delta: ");
+                            order = new AddOnDecorator(order, add, addDelta);
+                            Console.WriteLine($"→ {order.GetDescription()}  |  {order.GetPrice():C}");
+                            break;
+
+                        case "2":
+                            var from = Prompt("From side: ");
+                            var to = Prompt("To side: ");
+                            var fee = ReadDecimal("Swap fee: ");
+                            order = new SideSwapDecorator(order, from, to, fee);
+                            Console.WriteLine($"→ {order.GetDescription()}  |  {order.GetPrice():C}");
+                            break;
+
+                        case "3":
+                            var size = Prompt("Size label: ");
+                            var delta = ReadDecimal("Price delta: ");
+                            order = new SizeUpgradeDecorator(order, size, delta);
+                            Console.WriteLine($"→ {order.GetDescription()}  |  {order.GetPrice():C}");
+                            break;
+
+                        case "4":
+                            done = true;
+                            break;
+
+                        default:
+                            Console.WriteLine("Invalid choice.");
+                            break;
+                    }
+                }
+
+                Console.WriteLine("\n=== CHECKOUT SUMMARY ===");
+                Console.WriteLine(order.GetDescription());
+                Console.WriteLine($"Total: {order.GetPrice():C}");
+            }
+
+            static string Prompt(string label)
+            {
+                Console.Write(label);
+                return Console.ReadLine() ?? "";
+            }
+
+            static int ReadIntInRange(string label, int min, int max)
+            {
+                while (true)
+                {
+                    Console.Write(label);
+                    var s = Console.ReadLine();
+                    if (int.TryParse(s, out var v) && v >= min && v <= max) return v;
+                    Console.WriteLine($"Enter an integer between {min} and {max}.");
+                }
+            }
+
+            static decimal ReadDecimal(string label)
+            {
+                while (true)
+                {
+                    Console.Write(label);
+                    var s = Console.ReadLine();
+                    if (decimal.TryParse(s, out var d)) return d;
+                    Console.WriteLine("Enter a valid number.");
+                }
+            }
+
+            static decimal? ParseNullableDecimal(string s)
+            {
+                if (string.IsNullOrWhiteSpace(s)) return null;
+                if (decimal.TryParse(s, out var d)) return d;
+                return null;
             }
         }
     }
