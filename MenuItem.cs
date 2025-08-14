@@ -2,10 +2,10 @@
 {
     public class MenuItem : MenuComponent
     {
-        private readonly string _name;
-        private readonly string _description;
-        private readonly decimal _price;
-        private readonly int _userId;
+        private  string _name;
+        private  string _description;
+        private  decimal _price;
+        private  int _userId;
 
         public MenuItem(string name, string description, decimal price, int userId)
         {
