@@ -2,8 +2,8 @@
 {
     public class MenuCategory : MenuComponent
     {
-        private readonly List<MenuComponent> _children = new List<MenuComponent>();
-        private readonly string _name;
+        private  List<MenuComponent> _children = new List<MenuComponent>();
+        private  string _name;
 
         public MenuCategory(string name) => _name = name;
 

@@ -41,7 +41,6 @@ packages/
 # Ignore git merge conflict files
 *.orig
 # .gitignore
-SDP-assignment.sln
-SDP-assignment.csproj
+
 bin 
 obj
