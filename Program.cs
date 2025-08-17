@@ -111,8 +111,6 @@ namespace SDP_assignment
             {
                 Console.WriteLine($"\n=== RESTAURANT MENU - {restaurant.Name} ===");
 
-                Console.WriteLine("1. Create Menu Item");
-                Console.WriteLine("2. Logout");
 
                 Console.WriteLine("1. Add Category");
                 Console.WriteLine("2. Add Item to Category");
@@ -189,8 +187,8 @@ namespace SDP_assignment
                         // Simplified order placement - in real app you'd select restaurant and items
                         var sampleItems = new List<MenuItem>
                 {
-                    new MenuItem { Name = "Burger", Price = 9.99m },
-                    new MenuItem { Name = "Fries", Price = 3.99m }
+               //     new MenuItem { Name = "Burger", Price = 9.99m },
+               //     new MenuItem { Name = "Fries", Price = 3.99m }
                 };
                         customer.PlaceOrder(null, sampleItems); // Pass null restaurant for demo
 
