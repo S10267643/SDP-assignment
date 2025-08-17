@@ -1,29 +1,10 @@
-﻿using System.Collections.Generic;
-using System;
-
-namespace SDP_assignment
+﻿public abstract class MenuComponent
 {
-    public abstract class MenuComponent
-    {
-        public virtual void Add(MenuComponent component) =>
-            throw new NotSupportedException();
-
-        public virtual void Remove(MenuComponent component) =>
-            throw new NotSupportedException();
-
-        public virtual MenuComponent GetChild(int i) =>
-            throw new NotSupportedException();
-
-        public virtual string Name =>
-            throw new NotSupportedException();
-
-        public virtual string Description =>
-            throw new NotSupportedException();
-
-        public virtual decimal Price =>
-            throw new NotSupportedException();
-
-        public virtual void Print() =>
-            throw new NotSupportedException();
-    }
+    public abstract string Name { get; }
+    public virtual string Description => "";
+    public virtual decimal Price => 0;
+    public virtual void Add(MenuComponent component) => throw new NotImplementedException();
+    public virtual void Remove(MenuComponent component) => throw new NotImplementedException();
+    public virtual MenuComponent GetChild(int i) => throw new NotImplementedException();
+    public abstract void Print();
 }
