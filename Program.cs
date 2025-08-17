@@ -1,3 +1,4 @@
+
 namespace SDP_assignment
 {
     class Program
@@ -173,15 +174,22 @@ namespace SDP_assignment
             while (!logout)
             {
                 Console.WriteLine("\n=== CUSTOMER MENU ===");
+
                 Console.WriteLine("1. Place Order");
                 Console.WriteLine("2. View Order History");
                 Console.WriteLine("3. Subscribe to Restaurant");
+
+                Console.WriteLine("1. Search Menu Items");
+                Console.WriteLine("2. Place Order");
+                Console.WriteLine("3. View Order History");
+
                 Console.WriteLine("4. Logout");
                 Console.Write("Enter choice: ");
 
                 switch (Console.ReadLine())
                 {
                     case "1":
+
 
                         // Simplified order placement - in real app you'd select restaurant and items
                         var sampleItems = new List<MenuItem>
@@ -200,6 +208,20 @@ namespace SDP_assignment
                     case "3":
                         SubscribeToRestaurant(customer);
                         break;
+
+                        CustomerActions.RunSearch(customer, users, menuItems);
+                        break;
+                    case "2":
+                        var sampleItems = new List<MenuItem>
+                        {
+                            new MenuItem("Burger", "Beef burger", 9.99m, 0),
+                            new MenuItem("Fries",  "Crispy fries", 3.99m, 0)
+                        };
+                        break;
+                    case "3":
+                     //   customer.ViewOrderHistory();
+                        break;
+
                     case "4":
                         logout = true;
                         break;
@@ -209,6 +231,7 @@ namespace SDP_assignment
                 }
             }
         }
+
 
         static void PlaceOrder(Customer customer)
         {
@@ -271,6 +294,10 @@ namespace SDP_assignment
                     CustomerName = customer.Name,
                     Items = orderItems
                 };
+
+    }
+}
+
 
                 Console.WriteLine("Select payment method:");
                 Console.WriteLine("1. Credit Card");
