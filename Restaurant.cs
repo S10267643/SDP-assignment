@@ -1,17 +1,33 @@
-﻿namespace SDP_assignment
+﻿using System;
+using System.Globalization;
+
+namespace SDP_assignment
 {
     public class Restaurant : User
     {
-        private readonly MenuComponent _allMenus;
+        private readonly MenuComponent _allMenus; // Root of composite (MAIN MENU)
 
         public Restaurant()
         {
             _allMenus = new MenuCategory("MAIN MENU");
         }
 
+        
+        public MenuCategory RootMenu => (MenuCategory)_allMenus;
+
+        
+        public MenuCategory GetRootMenu() => (MenuCategory)_allMenus;
+
         public void AddMenuCategory(string name)
         {
-            _allMenus.Add(new MenuCategory(name));
+            name ??= string.Empty;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Console.WriteLine("Category name cannot be empty.");
+                return;
+            }
+
+            RootMenu.Add(new MenuCategory(name));
             Console.WriteLine($"Category '{name}' created successfully!");
         }
 
@@ -19,14 +35,19 @@
         {
             try
             {
-                // Get the MAIN MENU category
-                var mainMenu = _allMenus as MenuCategory;
-
-                // Find the target category
-                MenuCategory targetCategory = null;
-                foreach (MenuComponent component in mainMenu.GetChildren())
+                categoryName ??= string.Empty;
+                if (string.IsNullOrWhiteSpace(categoryName))
                 {
-                    if (component is MenuCategory category && category.Name.Equals(categoryName))
+                    Console.WriteLine("Category name cannot be empty.");
+                    return;
+                }
+
+                // Find the target category (case-insensitive)
+                MenuCategory? targetCategory = null;
+                foreach (MenuComponent component in RootMenu.GetChildren())
+                {
+                    if (component is MenuCategory category &&
+                        category.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase))
                     {
                         targetCategory = category;
                         break;
@@ -40,13 +61,24 @@
                 }
 
                 Console.Write("Item name: ");
-                string name = Console.ReadLine();
+                string name = Console.ReadLine() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    Console.WriteLine("Item name cannot be empty.");
+                    return;
+                }
 
                 Console.Write("Description: ");
-                string desc = Console.ReadLine();
+                string desc = Console.ReadLine() ?? string.Empty;
 
                 Console.Write("Price: $");
-                decimal price = decimal.Parse(Console.ReadLine());
+                var priceInput = Console.ReadLine() ?? string.Empty;
+                if (!decimal.TryParse(priceInput, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal price) &&
+                    !decimal.TryParse(priceInput, out price))
+                {
+                    Console.WriteLine("Invalid price.");
+                    return;
+                }
 
                 targetCategory.Add(new MenuItem(name, desc, price, this.UserId));
                 Console.WriteLine($"Item '{name}' added to '{categoryName}'!");
