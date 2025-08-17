@@ -1,7 +1,10 @@
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 
 namespace SDP_assignment
 {
@@ -153,26 +156,28 @@ namespace SDP_assignment
             while (!logout)
             {
                 Console.WriteLine("\n=== CUSTOMER MENU ===");
-                Console.WriteLine("1. Place Order");
-                Console.WriteLine("2. View Order History");
-                Console.WriteLine("3. Logout");
+                Console.WriteLine("1. Search Menu Items");
+                Console.WriteLine("2. Place Order");
+                Console.WriteLine("3. View Order History");
+                Console.WriteLine("4. Logout");
                 Console.Write("Enter choice: ");
 
                 switch (Console.ReadLine())
                 {
                     case "1":
-                        // Simplified order placement - in real app you'd select restaurant and items
-                        var sampleItems = new List<MenuItem>
-                        {
-                        new MenuItem("Burger", "Beef burger", 9.99m, 0),
-                        new MenuItem("Fries",  "Crispy fries", 3.99m, 0)
-                        };
-                        //   customer.PlaceOrder(null, sampleItems); // Pass null restaurant for demo
+                        CustomerActions.RunSearch(customer, users, menuItems);
                         break;
                     case "2":
-                     //   customer.ViewOrderHistory();
+                        var sampleItems = new List<MenuItem>
+                        {
+                            new MenuItem("Burger", "Beef burger", 9.99m, 0),
+                            new MenuItem("Fries",  "Crispy fries", 3.99m, 0)
+                        };
                         break;
                     case "3":
+                     //   customer.ViewOrderHistory();
+                        break;
+                    case "4":
                         logout = true;
                         break;
                     default:
@@ -182,6 +187,5 @@ namespace SDP_assignment
             }
         }
     }
-
 }
 
