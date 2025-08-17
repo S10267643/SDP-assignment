@@ -163,11 +163,11 @@ namespace SDP_assignment
                     case "1":
                         // Simplified order placement - in real app you'd select restaurant and items
                         var sampleItems = new List<MenuItem>
-                {
-                  new MenuItem { Name = "Burger", Price = 9.99m },
-                  new MenuItem { Name = "Fries", Price = 3.99m }
-                };
-                     //   customer.PlaceOrder(null, sampleItems); // Pass null restaurant for demo
+                        {
+                        new MenuItem("Burger", "Beef burger", 9.99m, 0),
+                        new MenuItem("Fries",  "Crispy fries", 3.99m, 0)
+                        };
+                        //   customer.PlaceOrder(null, sampleItems); // Pass null restaurant for demo
                         break;
                     case "2":
                      //   customer.ViewOrderHistory();

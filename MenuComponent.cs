@@ -1,4 +1,7 @@
-﻿namespace SDP_assignment
+﻿using System.Collections.Generic;
+using System;
+
+namespace SDP_assignment
 {
     public abstract class MenuComponent
     {
