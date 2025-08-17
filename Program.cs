@@ -123,13 +123,12 @@ namespace SDP_assignment
                 {
                     case "1":
 
-                        restaurant.CreateMenuItem(menuItems, ref menuItemIdCounter);
-
                         Console.Write("Enter category name: ");
                         string categoryName = Console.ReadLine();
                         restaurant.AddMenuCategory(categoryName);
-
+                     
                         break;
+                    
                     case "2":
 
 
