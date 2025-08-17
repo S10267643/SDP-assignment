@@ -9,6 +9,113 @@ namespace SDP_assignment
 {
     public static class CustomerActions
     {
+        public static void PlaceOrderWithCustomisations(Customer customer, List<User> users, List<MenuItem> localMenuItems)
+        {
+            // 1) Build a flat catalog (across all restaurants) – same traversal we use for search
+            var (catalog, ownerMap) = BuildCatalogAcrossRestaurants(users);
+
+            // Fallback to local list if no restaurant menu data yet
+            if (catalog.Count == 0 && localMenuItems != null && localMenuItems.Count > 0)
+            {
+                catalog = new List<MenuItem>(localMenuItems);
+                ownerMap = catalog.ToDictionary(i => i, _ => "(local)");
+            }
+
+            if (catalog.Count == 0)
+            {
+                Console.WriteLine("No menu items found. Ask restaurants to add categories/items first.");
+                return;
+            }
+
+            // 2) Let the user choose a search strategy to find an item (Strategy pattern)
+            Console.WriteLine("\nSelect search strategy (1=Linear, 2=Indexed, 3=Fuzzy): ");
+            string s = Console.ReadLine() ?? "";
+            ISearchStrategy strategy = s switch
+            {
+                "2" => new IndexedSearchStrategy(),
+                "3" => new FuzzySearchStrategy(),
+                _ => new LinearSearchStrategy()
+            };
+
+            var criteria = new SearchCriteria
+            {
+                Query = Prompt("Keyword (matches name; blank = all): "),
+                Category = Prompt("Description keyword (blank = any): "),
+                MaxPrice = ParseNullableDecimal(Prompt("Max price (blank = any): "))
+            };
+
+            var service = new SearchService();
+            service.SetStrategy(strategy);
+            var matches = service.Search(catalog, criteria);
+
+            if (matches.Count == 0)
+            {
+                Console.WriteLine("No matching items.");
+                return;
+            }
+
+            Console.WriteLine("\n=== MATCHES ===");
+            for (int i = 0; i < matches.Count; i++)
+            {
+                var owner = ownerMap.TryGetValue(matches[i], out var rname) ? rname : "(unknown)";
+                Console.WriteLine($"{i + 1}. {matches[i].Name} — {owner} — {matches[i].Price:C}");
+            }
+
+            int pick = ReadIntInRange($"Select an item (1..{matches.Count}): ", 1, matches.Count) - 1;
+
+            // 3) Decorator pattern: wrap the base item with customisations
+            IFoodItem orderItem = matches[pick]; // MenuItem implements IFoodItem
+
+            bool done = false;
+            while (!done)
+            {
+                Console.WriteLine("\nCustomisation:");
+                Console.WriteLine("1. Add-on");
+                Console.WriteLine("2. Swap side");
+                Console.WriteLine("3. Size upgrade");
+                Console.WriteLine("4. Proceed to checkout");
+                Console.Write("Enter choice: ");
+
+                switch ((Console.ReadLine() ?? "").Trim())
+                {
+                    case "1":
+                        var add = Prompt("Add-on name: ");
+                        var addDelta = ReadDecimal("Price delta (e.g., 0.50): ");
+                        orderItem = new AddOnDecorator(orderItem, add, addDelta);
+                        Console.WriteLine($"Added {add}. Current total: {orderItem.GetPrice():C}");
+                        break;
+
+                    case "2":
+                        var from = Prompt("Replace side (from): ");
+                        var to = Prompt("Replace with (to): ");
+                        var fee = ReadDecimal("Swap fee (can be negative): ");
+                        orderItem = new SideSwapDecorator(orderItem, from, to, fee);
+                        Console.WriteLine($"Swapped {from}→{to}. Current total: {orderItem.GetPrice():C}");
+                        break;
+
+                    case "3":
+                        var size = Prompt("Size label: ");
+                        var delta = ReadDecimal("Price delta: ");
+                        orderItem = new SizeUpgradeDecorator(orderItem, size, delta);
+                        Console.WriteLine($"Upgraded to {size}. Current total: {orderItem.GetPrice():C}");
+                        break;
+
+                    case "4":
+                        done = true;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
+                }
+            }
+
+            // 4) Checkout summary (hook into your Order aggregate later)
+            Console.WriteLine("\n=== CHECKOUT SUMMARY ===");
+            Console.WriteLine(orderItem.GetDescription());
+            Console.WriteLine($"Total: {orderItem.GetPrice():C}");
+        }
+
         public static void RunSearch(Customer customer, List<User> users, List<MenuItem> localMenuItems)
         {
             var (catalog, ownerMap) = BuildCatalogAcrossRestaurants(users);
@@ -143,6 +250,28 @@ namespace SDP_assignment
             if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out var d)) return d;
             if (decimal.TryParse(s, out d)) return d;
             return null;
+        }
+        private static int ReadIntInRange(string label, int min, int max)
+        {
+            while (true)
+            {
+                Console.Write(label);
+                var s = Console.ReadLine();
+                if (int.TryParse(s, out var v) && v >= min && v <= max) return v;
+                Console.WriteLine($"Enter an integer between {min} and {max}.");
+            }
+        }
+
+        private static decimal ReadDecimal(string label)
+        {
+            while (true)
+            {
+                Console.Write(label);
+                var s = Console.ReadLine();
+                if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out var d)) return d;
+                if (decimal.TryParse(s, out d)) return d; // fallback to current culture
+                Console.WriteLine("Enter a valid number, e.g., 4.50");
+            }
         }
     }
 }
